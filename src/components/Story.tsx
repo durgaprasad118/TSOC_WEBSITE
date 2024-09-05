@@ -1,5 +1,4 @@
 import f_1 from '../assets/f_1.svg';
-
 import left from '../assets/left.svg';
 import right from '../assets/right.svg';
 import Rohan from '../assets/Rohan.svg';
@@ -58,7 +57,10 @@ const Story = () => {
     ];
 
     return (
-        <div className="bg-[#EEF8FF] my-10 w-full md:h-[945px] h-[697px]">
+        <div
+            id="Story"
+            className="bg-[#EEF8FF] my-10 w-full md:h-[945px] h-[697px]"
+        >
             <div className="header md:p-10 p-4 flex items-center justify-between">
                 <div className="flex flex-col gap-2 md:gap-8">
                     <h1 className="text-[18px] md:text-[48px] font-baiJamjuree font-medium leading-6 text-black">

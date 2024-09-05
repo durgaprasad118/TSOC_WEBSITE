@@ -7,7 +7,10 @@ import two from '../assets/two.svg';
 
 const Working = () => {
     return (
-        <div className="w-[96vw] my-10 flex justify-center  items-center font-thin font-rubik">
+        <div
+            id="Working"
+            className="w-[96vw] md:mt-20px mt-10px flex justify-center  items-center font-thin font-rubik"
+        >
             <div className="md:w-[1280px] md:h-[634px] w-[328px] h-[771px]  flex flex-col-reverse md:flex-row items-center justify-between">
                 <div className="flex flex-col justify-between md:w-[580px] md:h-[634px] w-[328px] h-[433px] ">
                     <div className="md:w-[580px] md:h-[138px] w-[328px] h-[81px] flex justify-between flex-col">

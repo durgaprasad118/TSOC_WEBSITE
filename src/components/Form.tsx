@@ -1,9 +1,9 @@
 const FormComponent = () => {
     return (
-        <div className="rounded-[10px] bg-[#EEF8FF] flex-1 self-center  p-5 md:self-stretch">
+        <div className="rounded-[10px] bg-[#EEF8FF] flex-1 flex  p-3  md:p-5 md:self-stretch">
             <div className="rounded-[5px] bg-white px-5 shadow-sm font-rubik font-thin">
                 <div className="mb-10 overflow-x-scroll">
-                    <div className="w-[628px] mt-5 flex flex-col items-start gap-10">
+                    <div className="md:w-[628px] w-[304px] mt-5 flex flex-col items-start gap-10">
                         <div className="flex flex-col gap-5 self-stretch">
                             <div className="flex gap-6 md:flex-col">
                                 <div className="flex md:flex-row flex-col gap-4">
@@ -56,7 +56,7 @@ const FormComponent = () => {
                                             htmlFor="emailAd"
                                             className="block text-sm font-thin  "
                                         >
-                                            EmailAd
+                                            Email Address
                                             <span className="text-red-500">
                                                 *
                                             </span>
@@ -73,27 +73,27 @@ const FormComponent = () => {
 
                                     <div className="flex w-full flex-col items-start gap-3">
                                         <label
-                                            htmlFor="Cname"
+                                            htmlFor="floating_phone"
                                             className="block text-sm font-thin  "
                                         >
-                                            Company Name
+                                            Phone No
                                             <span className="text-red-500">
                                                 *
                                             </span>
                                         </label>
+
                                         <input
-                                            id="Cname"
+                                            name="floating_phone"
                                             aria-describedby="helper-text-explanation"
                                             className="bg-gray-50 border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                                            type="text"
-                                            name="Name Input"
-                                            placeholder="John Doe"
+                                            type="tel"
+                                            placeholder="000-000-000"
                                         />
                                     </div>
                                 </div>
                             </div>
+
                             <div className="flex gap-6 md:flex-col">
-                                {/* Country Input */}
                                 <div className="w-[50%] flex flex-col items-start gap-3 md:w-full">
                                     <p className="text-[16px] font-normal text-foundation-text-text_500">
                                         <span>Country you’re based in</span>

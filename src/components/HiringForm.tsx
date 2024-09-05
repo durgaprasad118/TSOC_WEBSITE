@@ -2,8 +2,11 @@ import FormComponent from './Form';
 
 const HiringForm = () => {
     return (
-        <div className="w-[96vw] md:mx-6 mx-6 my-10 flex flex-col md:flex-row md:px-12 justify-between font-thin font-rubik gap-4 md:gap-1">
-            <div className="flex flex-col">
+        <div
+            id="Form"
+            className="px-1  md:mx-6 my-10 flex flex-col md:flex-row  md:px-12 justify-between font-thin font-rubik gap-4 md:gap-1"
+        >
+            <div className="px-2flex flex-col">
                 <span className="hidden md:block w-fit border text-[#707070] text-[14px] border-[#EAEAEA] rounded-[100px] p-[10px]">
                     Contact Us
                 </span>

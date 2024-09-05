@@ -3,7 +3,10 @@ import benefit_text from '../assets/benefit_text.svg';
 import Button from './ui/Button';
 const Benefit = () => {
     return (
-        <div className="w-[96vw] my-10 flex justify-center  items-center font-thin font-rubik">
+        <div
+            id="Benefits"
+            className="w-[96vw] my-10 flex justify-center  items-center font-thin font-rubik"
+        >
             <div className="md:w-[1280px] md:h-[518px] w-[328px] h-[664px] justify-between items-center font-rubik md:flex-row flex flex-col">
                 <img
                     src={benefits}

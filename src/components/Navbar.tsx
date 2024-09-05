@@ -2,13 +2,18 @@ import { useState } from 'react';
 import logo from '../assets/Logo.svg';
 import RightCWhite from '../assets/rightCWhite.svg';
 import Button from './ui/Button';
+
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const toggleNavbar = () => {
         setIsOpen(!isOpen);
     };
+    const closeNavbarOnClick = () => {
+        setIsOpen(false);
+    };
+
     return (
-        <nav className="bg-white border-gray-200 h-[100px]">
+        <nav className="bg-white border-gray-200 top-0 fixed w-[100vw] md:h-[100px] h-[60px] z-20">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <a
                     href="#"
@@ -44,49 +49,72 @@ const Navbar = () => {
                 <div
                     className={`${
                         isOpen ? 'block' : 'hidden'
-                    } w-full md:block md:w-auto`}
+                    } w-full md:block md:w-auto z-50`}
                     id="navbar-default"
                 >
                     <ul className="font-medium font-baiJamjuree text-[14px] flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white">
                         <li>
                             <a
-                                href="#"
-                                className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0"
+                                href="#Story"
+                                className="block py-2 px-3   rounded md:bg-transparent hover:text-blue-700 md:p-0"
                                 aria-current="page"
+                                onClick={closeNavbarOnClick}
                             >
-                                Home
+                                Mentors
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="#Working"
+                                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
+                                onClick={closeNavbarOnClick}
+                            >
+                                How it works
                             </a>
                         </li>
                         <li>
                             <a
                                 href="#"
                                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
+                                onClick={closeNavbarOnClick}
                             >
-                                About
+                                Projects
                             </a>
                         </li>
                         <li>
                             <a
                                 href="#"
                                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
+                                onClick={closeNavbarOnClick}
                             >
-                                Services
+                                Blog
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="#Benefits"
+                                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
+                                onClick={closeNavbarOnClick}
+                            >
+                                FAQ
                             </a>
                         </li>
                         <li>
                             <a
                                 href="#"
                                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
+                                onClick={closeNavbarOnClick}
                             >
-                                Pricing
+                                Code of Conduct
                             </a>
                         </li>
                         <li>
                             <a
-                                href="#"
+                                href="#Form"
                                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
+                                onClick={closeNavbarOnClick}
                             >
-                                Contact
+                                Hire From Us
                             </a>
                         </li>
                     </ul>

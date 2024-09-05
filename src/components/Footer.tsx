@@ -15,7 +15,15 @@ const Footer = () => {
                             className="h-[100%] w-[121.95px] "
                         />
                         <div className=" h-[20px] w-[135px] text-white flex items-center justify-center">
-                            <div className="h-[18px] w-[111px] flex justify-center items-center font-semibold md:text-[14px] text-[12px]">
+                            <div
+                                onClick={() =>
+                                    window.scrollTo({
+                                        top: 0,
+                                        behavior: 'smooth'
+                                    })
+                                }
+                                className="h-[18px] w-[111px] flex justify-center items-center font-semibold md:text-[14px] text-[12px]"
+                            >
                                 BACK TO TOP
                             </div>
                             <img
