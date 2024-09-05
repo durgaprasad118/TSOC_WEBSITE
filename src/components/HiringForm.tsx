@@ -4,9 +4,9 @@ const HiringForm = () => {
     return (
         <div
             id="Form"
-            className="px-1  md:mx-6 my-10 flex flex-col md:flex-row  md:px-12 justify-between font-thin font-rubik gap-4 md:gap-1"
+            className="px-1  md:mx-6 my-10 flex flex-col md:flex-row  md:px-12 md:justify-between font-thin font-rubik gap-4 md:gap-1"
         >
-            <div className="px-2flex flex-col">
+            <div className="px-6 flex flex-col">
                 <span className="hidden md:block w-fit border text-[#707070] text-[14px] border-[#EAEAEA] rounded-[100px] p-[10px]">
                     Contact Us
                 </span>
@@ -21,7 +21,7 @@ const HiringForm = () => {
                     </p>
                 </div>
             </div>
-            <div className="md:w-[708px] md:h-[1092px]">
+            <div className="md:w-[708px] w-[420px] md:h-[1092px]">
                 <FormComponent />
             </div>
         </div>

@@ -1,16 +1,177 @@
-const FormComponent = () => {
+import { useState, useEffect } from 'react';
+import Button from './ui/Button';
+import { City, Country, ICity } from 'country-state-city';
+import axios from 'axios';
+
+interface FormData {
+    contactName: string;
+    companyName: string;
+    email: string;
+    phone: string;
+    country: string;
+    city: string;
+    employmentType: string;
+    skillLevel: string;
+    budget: number;
+    additionalInfo: string;
+    roleLook: string;
+    currency: string | null;
+    phoneCode: string | null;
+}
+
+const FormComponent: React.FC = () => {
+    const [formData, setFormData] = useState<FormData>({
+        contactName: '',
+        companyName: '',
+        email: '',
+        phone: '',
+        country: '',
+        city: '',
+        employmentType: '',
+        skillLevel: '',
+        budget: 0,
+        additionalInfo: '',
+        roleLook: '',
+        currency: null,
+        phoneCode: null
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [countries, setCountries] = useState(Country.getAllCountries());
+    const [cities, setCities] = useState<ICity[]>([]);
+    const [selectedCountry, setSelectedCountry] = useState<string>('');
+
+    useEffect(() => {
+        if (selectedCountry) {
+            const cityData = City.getCitiesOfCountry(
+                selectedCountry
+            ) as ICity[];
+            setCities(cityData || []);
+
+            // Fetch currency and phone code based on selected country
+            const fetchCountryData = async () => {
+                try {
+                    const response = await axios.get(
+                        `https://restcountries.com/v3.1/all`
+                    );
+                    const countryData = response.data.find(
+                        (country: any) => country.cca2 === selectedCountry
+                    );
+
+                    if (countryData) {
+                        const currencyCode = countryData.currencies
+                            ? Object.keys(countryData.currencies)[0]
+                            : null;
+                        const idd = countryData.idd || {};
+                        const root = idd.root || '';
+                        const suffixes = idd.suffixes || [];
+                        const phoneCode =
+                            root + (suffixes.length > 0 ? suffixes[0] : '');
+
+                        setFormData((prevState) => ({
+                            ...prevState,
+                            currency: currencyCode || null,
+                            phoneCode: phoneCode || null
+                        }));
+                    } else {
+                        setFormData((prevState) => ({
+                            ...prevState,
+                            currency: null,
+                            phoneCode: null
+                        }));
+                    }
+                } catch (error) {
+                    console.error('Error fetching country data:', error);
+                    setFormData((prevState) => ({
+                        ...prevState,
+                        currency: null,
+                        phoneCode: null
+                    }));
+                }
+            };
+
+            fetchCountryData();
+        } else {
+            setCities([]);
+            setFormData((prevState) => ({
+                ...prevState,
+                currency: null,
+                phoneCode: null
+            }));
+        }
+    }, [selectedCountry]);
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
+        const { name, value, type } = e.target;
+
+        if (type === 'radio' || type === 'select-one') {
+            setFormData((prevState) => ({
+                ...prevState,
+                [name]: value
+            }));
+        } else if (type === 'checkbox') {
+            const checked = (e.target as HTMLInputElement).checked;
+            setFormData((prevState) => ({
+                ...prevState,
+                [name]: checked ? value : ''
+            }));
+        } else {
+            setFormData((prevState) => ({
+                ...prevState,
+                [name]: value
+            }));
+        }
+    };
+
+    const handleCountryChange = (
+        event: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        const countryCode = event.target.value;
+        setSelectedCountry(countryCode);
+        setFormData((prevState) => ({
+            ...prevState,
+            country: countryCode,
+            city: '' // Reset city when country changes
+        }));
+    };
+
+    const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setFormData((prevState) => ({
+            ...prevState,
+            city: event.target.value
+        }));
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log('Form data submitted:', formData);
+        // Handle form submission
+    };
+
+    const employmentTypes = [
+        'Full-time Role',
+        'Part-time Role',
+        'Internship Role'
+    ];
+    const skillLevels = ['Intermediate level', 'Junior level', 'Senior Level'];
+
     return (
-        <div className="rounded-[10px] bg-[#EEF8FF] flex-1 flex  p-3  md:p-5 md:self-stretch">
-            <div className="rounded-[5px] bg-white px-5 shadow-sm font-rubik font-thin">
-                <div className="mb-10 overflow-x-scroll">
-                    <div className="md:w-[628px] w-[304px] mt-5 flex flex-col items-start gap-10">
-                        <div className="flex flex-col gap-5 self-stretch">
-                            <div className="flex gap-6 md:flex-col">
+        <div className="w-full flex justify-center">
+            <div className="h-auto w-[90%] md:w-full rounded-[10px] bg-[#EEF8FF] justify-center flex p-3 md:p-5">
+                <div className="rounded-[5px] bg-white px-5 shadow-sm font-rubik font-thin">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="mb-10 overflow-x-scroll"
+                    >
+                        <div className="md:w-[628px] w-[304px] mt-5 flex flex-col items-start gap-10">
+                            <div className="flex flex-col gap-5 self-stretch">
                                 <div className="flex md:flex-row flex-col gap-4">
                                     <div className="flex w-full flex-col items-start gap-3">
                                         <label
-                                            htmlFor="name"
-                                            className="block text-sm font-thin  "
+                                            htmlFor="contactName"
+                                            className="block text-sm font-thin"
                                         >
                                             Contact Name
                                             <span className="text-red-500">
@@ -18,19 +179,20 @@ const FormComponent = () => {
                                             </span>
                                         </label>
                                         <input
-                                            id="name"
-                                            aria-describedby="helper-text-explanation"
-                                            className="bg-gray-50 border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                            id="contactName"
+                                            name="contactName"
+                                            value={formData.contactName}
+                                            onChange={handleChange}
+                                            className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                             type="text"
-                                            name="Name Input"
                                             placeholder="John Doe"
                                         />
                                     </div>
 
                                     <div className="flex w-full flex-col items-start gap-3">
                                         <label
-                                            htmlFor="Cname"
-                                            className="block text-sm font-thin  "
+                                            htmlFor="companyName"
+                                            className="block text-sm font-thin"
                                         >
                                             Company Name
                                             <span className="text-red-500">
@@ -38,23 +200,22 @@ const FormComponent = () => {
                                             </span>
                                         </label>
                                         <input
-                                            id="Cname"
-                                            aria-describedby="helper-text-explanation"
-                                            className="bg-gray-50 border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                                            id="companyName"
+                                            name="companyName"
+                                            value={formData.companyName}
+                                            onChange={handleChange}
+                                            className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                             type="text"
-                                            name="Name Input"
-                                            placeholder="John Doe"
+                                            placeholder="Company Name"
                                         />
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="flex gap-6 md:flex-col">
                                 <div className="flex md:flex-row flex-col gap-4">
                                     <div className="flex w-full flex-col items-start gap-3">
                                         <label
-                                            htmlFor="emailAd"
-                                            className="block text-sm font-thin  "
+                                            htmlFor="email"
+                                            className="block text-sm font-thin"
                                         >
                                             Email Address
                                             <span className="text-red-500">
@@ -62,158 +223,275 @@ const FormComponent = () => {
                                             </span>
                                         </label>
                                         <input
-                                            id="emailAd"
-                                            aria-describedby="helper-text-explanation"
-                                            className="bg-gray-50 border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                                            type="text"
-                                            name="Name Input"
-                                            placeholder="John Doe"
+                                            id="email"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleChange}
+                                            className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                            type="email"
+                                            placeholder="example@example.com"
                                         />
                                     </div>
-
                                     <div className="flex w-full flex-col items-start gap-3">
                                         <label
-                                            htmlFor="floating_phone"
-                                            className="block text-sm font-thin  "
+                                            htmlFor="country"
+                                            className="block text-sm font-thin"
+                                        >
+                                            Country you are based in
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
+                                        </label>
+                                        <select
+                                            id="country"
+                                            name="country"
+                                            value={formData.country}
+                                            onChange={handleCountryChange}
+                                            className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                        >
+                                            <option value="" disabled>
+                                                Select a country
+                                            </option>
+                                            {countries.map((country) => (
+                                                <option
+                                                    key={country.isoCode}
+                                                    value={country.isoCode}
+                                                >
+                                                    {country.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="flex md:flex-row flex-col gap-4">
+                                    <div className="flex w-full flex-col items-start gap-3">
+                                        <label
+                                            htmlFor="phone"
+                                            className="block text-sm font-thin"
                                         >
                                             Phone No
                                             <span className="text-red-500">
                                                 *
                                             </span>
                                         </label>
+                                        <div className="w-full flex justify-between gap-2">
+                                            <div className="flex w-[80px] flex-col  gap-3">
+                                                <input
+                                                    id="phoneCode"
+                                                    name="phoneCode"
+                                                    value={
+                                                        formData.phoneCode || ''
+                                                    }
+                                                    readOnly
+                                                    className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                />
+                                            </div>
+                                            <input
+                                                id="phone"
+                                                name="phone"
+                                                value={formData.phone}
+                                                onChange={handleChange}
+                                                className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                type="tel"
+                                                placeholder={`Enter phone number with country code ${formData.phoneCode || ''}`}
+                                            />
+                                        </div>
+                                    </div>
 
+                                    <div className="flex w-full flex-col items-start gap-3">
+                                        <label
+                                            htmlFor="city"
+                                            className="block text-sm font-thin"
+                                        >
+                                            City you’re operating from
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
+                                        </label>
+                                        <select
+                                            id="city"
+                                            name="city"
+                                            value={formData.city}
+                                            onChange={handleCityChange}
+                                            className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                        >
+                                            <option value="" disabled>
+                                                Select a city
+                                            </option>
+                                            {cities.map((city) => (
+                                                <option
+                                                    key={city.stateCode}
+                                                    value={city.name}
+                                                >
+                                                    {city.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex w-full flex-col items-start gap-3">
+                                <label
+                                    htmlFor="roleLook"
+                                    className="block text-sm font-thin"
+                                >
+                                    Role You are looking for
+                                    <span className="text-red-500">*</span>
+                                </label>
+                                <select
+                                    id="roleLook"
+                                    name="roleLook"
+                                    value={formData.roleLook}
+                                    onChange={handleChange}
+                                    className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                >
+                                    <option value="">Select an option</option>
+                                    <option value="Frontend">Frontend</option>
+                                    <option value="Full stack">
+                                        Full stack
+                                    </option>
+                                    <option value="Backend">Backend</option>
+                                </select>
+                            </div>
+
+                            <div className="flex md:flex-row flex-col w-full">
+                                <div className="flex w-full flex-col items-start gap-3">
+                                    <label
+                                        htmlFor="employmentType"
+                                        className="block text-sm font-thin"
+                                    >
+                                        Employment type you are offering
+                                        <span className="text-red-500">*</span>
+                                    </label>
+                                    {employmentTypes.map((type) => (
+                                        <div
+                                            key={type}
+                                            className="flex items-center mb-2"
+                                        >
+                                            <input
+                                                id={type}
+                                                name="employmentType"
+                                                type="radio"
+                                                value={type}
+                                                checked={
+                                                    formData.employmentType ===
+                                                    type
+                                                }
+                                                onChange={handleChange}
+                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                                            />
+                                            <label
+                                                htmlFor={type}
+                                                className="ms-2 text-sm font-thin text-[#292929]"
+                                            >
+                                                {type}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="flex w-full flex-col items-start gap-3">
+                                    <label
+                                        htmlFor="skillLevel"
+                                        className="block text-sm font-thin"
+                                    >
+                                        Skill Level
+                                        <span className="text-red-500">*</span>
+                                    </label>
+                                    {skillLevels.map((level) => (
+                                        <div
+                                            key={level}
+                                            className="flex items-center mb-2"
+                                        >
+                                            <input
+                                                id={level}
+                                                name="skillLevel"
+                                                type="radio"
+                                                value={level}
+                                                checked={
+                                                    formData.skillLevel ===
+                                                    level
+                                                }
+                                                onChange={handleChange}
+                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                                            />
+                                            <label
+                                                htmlFor={level}
+                                                className="ms-2 text-sm font-thin text-[#292929]"
+                                            >
+                                                {level}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="flex w-full flex-col items-start gap-3">
+                                <label
+                                    htmlFor="budget"
+                                    className="block text-sm font-thin"
+                                >
+                                    What's your Budget?
+                                    <span className="text-red-500">*</span>
+                                </label>
+
+                                <div className="w-full flex justify-between gap-2">
+                                    <div className="flex w-[62px]   gap-3">
                                         <input
-                                            name="floating_phone"
-                                            aria-describedby="helper-text-explanation"
-                                            className="bg-gray-50 border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                                            type="tel"
-                                            placeholder="000-000-000"
+                                            id="currency"
+                                            name="currency"
+                                            value={formData.currency || ''}
+                                            readOnly
+                                            className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                         />
                                     </div>
+
+                                    <input
+                                        id="budget"
+                                        name="budget"
+                                        value={formData.budget}
+                                        onChange={handleChange}
+                                        className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                        type="number"
+                                        placeholder="Enter your budget"
+                                    />
                                 </div>
                             </div>
 
-                            <div className="flex gap-6 md:flex-col">
-                                <div className="w-[50%] flex flex-col items-start gap-3 md:w-full">
-                                    <p className="text-[16px] font-normal text-foundation-text-text_500">
-                                        <span>Country you’re based in</span>
-                                        <span className="text-red-500">*</span>
-                                    </p>
-                                    <div className="flex items-center justify-between gap-5 self-stretch rounded-md border border-solid border-black-900_19 px-4 py-3">
-                                        <p className="text-[16px] font-light text-gray-500">
-                                            Select Country
-                                        </p>
-                                        <img
-                                            className="w-[20px] h-[20px]"
-                                            src="checkmark-url"
-                                            alt="Checkmark Icon"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Role Input */}
-                                <div className="w-[50%] flex flex-col items-start gap-3 md:w-full">
-                                    <p className="text-[16px] font-normal text-foundation-text-text_500">
-                                        <span>
-                                            Role you are looking to hire
-                                        </span>
-                                        <span className="text-red-500">*</span>
-                                    </p>
-                                    <div className="flex items-center justify-between gap-5 self-stretch rounded-md border border-solid border-black-900_19 px-4 py-3">
-                                        <p className="text-[16px] font-light text-gray-500">
-                                            Select Role
-                                        </p>
-                                        <img
-                                            className="w-[20px] h-[20px]"
-                                            src="checkmark-url"
-                                            alt="Checkmark Icon"
-                                        />
-                                    </div>
-                                </div>
+                            <div className="flex w-full flex-col items-start gap-3">
+                                <label
+                                    htmlFor="additionalInfo"
+                                    className="block text-sm font-thin"
+                                >
+                                    Additional information about role you are
+                                    looking to hire?
+                                    <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    id="additionalInfo"
+                                    name="additionalInfo"
+                                    value={formData.additionalInfo}
+                                    onChange={handleChange}
+                                    className="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                    placeholder="Type your message"
+                                />
                             </div>
 
-                            {/* Employment Type */}
-                            <div className="flex gap-6 md:flex-col">
-                                <div className="w-[50%] flex flex-col items-start gap-3 md:w-full">
-                                    <p className="text-[16px] font-normal text-foundation-text-text_500">
-                                        <span>
-                                            Employment type you’re offering?
-                                        </span>
-                                        <span className="text-red-500">*</span>
-                                    </p>
-                                    <div className="self-stretch">
-                                        <div className="flex flex-col gap-4">
-                                            <div className="flex items-center gap-2">
-                                                <img
-                                                    className="w-[24px] h-[24px]"
-                                                    src="full-time-icon-url"
-                                                    alt="Full-time"
-                                                />
-                                                <p className="text-[16px] font-light text-foundation-text-text_500">
-                                                    Full-time Role
-                                                </p>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <img
-                                                    className="w-[24px] h-[24px]"
-                                                    src="part-time-icon-url"
-                                                    alt="Part-time"
-                                                />
-                                                <p className="text-[16px] font-light text-foundation-text-text_500">
-                                                    Part-time Role
-                                                </p>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <img
-                                                    className="w-[24px] h-[24px]"
-                                                    src="internship-icon-url"
-                                                    alt="Internship"
-                                                />
-                                                <p className="text-[16px] font-light text-foundation-text-text_500">
-                                                    Internship Role
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Onsite/Remote Input */}
-                                <div className="w-[50%] flex flex-col items-start gap-3 md:w-full">
-                                    <p className="text-[16px] font-normal text-foundation-text-text_500">
-                                        <span>
-                                            Are these positions onsite or
-                                            remote?
-                                        </span>
-                                        <span className="text-red-500">*</span>
-                                    </p>
-                                    <div className="self-stretch">
-                                        <div className="flex flex-col gap-4">
-                                            <div className="flex items-center gap-2">
-                                                <img
-                                                    className="w-[24px] h-[24px]"
-                                                    src="onsite-icon-url"
-                                                    alt="Onsite"
-                                                />
-                                                <p className="text-[16px] font-light text-foundation-text-text_500">
-                                                    Onsite
-                                                </p>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <img
-                                                    className="w-[24px] h-[24px]"
-                                                    src="remote-icon-url"
-                                                    alt="Remote"
-                                                />
-                                                <p className="text-[16px] font-light text-foundation-text-text_500">
-                                                    Remote
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div className="flex w-full flex-col items-start gap-3">
+                                <label
+                                    htmlFor="currency"
+                                    className="block text-sm font-thin"
+                                >
+                                    Currency
+                                </label>
                             </div>
                         </div>
-                    </div>
+                        <div className="mt-4">
+                            <Button>Submit</Button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

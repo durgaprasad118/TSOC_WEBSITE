@@ -101,7 +101,7 @@ const Footer = () => {
                                     <input
                                         type="email"
                                         id="default-email"
-                                        className="block w-full p-4 ps-10 text-sm text-gray-900  rounded-lg bg-[#0060E7] focus:ring-blue-500 focus:border-blue-500 "
+                                        className="block w-full p-4 ps-10 text-sm text-white rounded-lg bg-[#0060E7] focus:ring-blue-500 focus:border-blue-500 "
                                         placeholder="Email Address"
                                         required
                                     />
