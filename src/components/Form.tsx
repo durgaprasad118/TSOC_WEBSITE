@@ -37,8 +37,7 @@ const FormComponent: React.FC = () => {
         phoneCode: null
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [countries, setCountries] = useState(Country.getAllCountries());
+    const [countries] = useState(Country.getAllCountries());
     const [cities, setCities] = useState<ICity[]>([]);
     const [selectedCountry, setSelectedCountry] = useState<string>('');
 
