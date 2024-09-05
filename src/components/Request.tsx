@@ -1,4 +1,5 @@
 import reqsvg from '../assets/Request.svg';
+import RightCWhite from '../assets/rightCWhite.svg';
 import reqsvgsm from '../assets/Requestsm.svg';
 import round from '../assets/round.svg';
 
@@ -18,8 +19,15 @@ const Request = () => {
                             <span className="text-[#0060E7]">Accelerate </span>
                             Your Growth.
                         </div>
-                        <div className="md:w-[199px] md:h-[50px] w-[179px] h-[44px] text-[16px]  left-[10px] cursor-pointer rounded-[5px] text-white bg-[#0060E7] flex items-center justify-center font-medium ">
+                        <div className="md:w-[200px] px-[4px] md:h-[50px] w-[179px] h-[44px] text-[16px]  left-[10px] cursor-pointer rounded-[5px] text-white bg-[#0060E7] flex items-center justify-between font-medium ">
                             Request Talent Today
+                            <span>
+                                <img
+                                    src={RightCWhite}
+                                    className="text-white"
+                                    alt=""
+                                />
+                            </span>
                         </div>
                     </div>
                 </div>
