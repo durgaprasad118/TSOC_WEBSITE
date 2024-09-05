@@ -5,7 +5,7 @@ import media from '../assets/media.svg';
 
 const Footer = () => {
     return (
-        <div className="w-[96vw] mb-8 flex justify-center mt-4 items-center font-rubik">
+        <div className="w-[96vw] my-10 flex justify-center  items-center font-rubik">
             <div className="md:w-[1280px] md:h-[452px] w-[328px] h-[785px] md:p-0 p-[32px] bg-[#0060E7] rounded-[20px] flex flex-col justify-between items-center md:flex-row md:justify-center md:gap-0 gap-y-[32px] md:items-center">
                 <div className="md:w-[1200px] md:h-[372px] w-[296px] h-[721px] flex flex-col justify-between">
                     <div className="md:w-[100%] md:h-[34px] h-[34px] w-[296px]  flex justify-between items-center">

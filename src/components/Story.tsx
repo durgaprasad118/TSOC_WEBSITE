@@ -110,7 +110,7 @@ const Story = () => {
                     </div>
                 ))}
             </div>
-            <div className="mt-2">
+            <div className="mt-8 ml-32">
                 <div className="md:hidden flex h-[36px] w-[104px] gap-[32px]  items-center justify-between">
                     <button onClick={scrollLeft}>
                         <img src={left} alt="Scroll Left" />
