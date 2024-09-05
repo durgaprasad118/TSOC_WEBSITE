@@ -52,7 +52,6 @@ const FormComponent: React.FC = () => {
             ) as ICity[];
             setCities(cityData || []);
 
-            // Fetch currency and phone code based on selected country
             const fetchCountryData = async () => {
                 try {
                     const response = await axios.get(
@@ -186,7 +185,7 @@ Role Look: ${roleLook}
 Currency: ${currency}`
         );
 
-        const mailtoLink = `mailto:bgrnaidu@gmail.com?subject=${subject}&body=${body}`;
+        const mailtoLink = `mailto:tsoc@tsoc.dev?subject=${subject}&body=${body}`;
         window.location.href = mailtoLink;
         setFormData({
             contactName: '',
