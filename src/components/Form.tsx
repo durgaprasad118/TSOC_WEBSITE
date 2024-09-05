@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
-import Button from './ui/Button';
-import { City, Country, ICity } from 'country-state-city';
 import axios from 'axios';
+import { City, Country, ICity } from 'country-state-city';
+import { useEffect, useState } from 'react';
+import Modal from './Modal';
+import Button from './ui/Button';
 
 interface FormData {
     contactName: string;
@@ -41,6 +42,10 @@ const FormComponent: React.FC = () => {
     const [cities, setCities] = useState<ICity[]>([]);
     const [selectedCountry, setSelectedCountry] = useState<string>('');
 
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const toggleModal = () => {
+        setIsModalVisible((prev) => !prev);
+    };
     useEffect(() => {
         if (selectedCountry) {
             const cityData = City.getCitiesOfCountry(
@@ -133,7 +138,7 @@ const FormComponent: React.FC = () => {
         setFormData((prevState) => ({
             ...prevState,
             country: countryCode,
-            city: '' // Reset city when country changes
+            city: ''
         }));
     };
 
@@ -146,10 +151,62 @@ const FormComponent: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Form data submitted:', formData);
-        // Handle form submission
-    };
+        const {
+            contactName,
+            companyName,
+            email,
+            phone,
+            country,
+            city,
+            employmentType,
+            skillLevel,
+            budget,
+            additionalInfo,
+            roleLook,
+            currency,
+            phoneCode
+        } = formData;
 
+        const subject = encodeURIComponent(
+            `HIRE FROM US DETAILS of ${contactName}`
+        );
+
+        toggleModal();
+        const body = encodeURIComponent(
+            `Contact Name: ${contactName}
+Company Name: ${companyName}
+Email: ${email}
+Phone: ${phone} ${phoneCode ? `(+${phoneCode})` : ''}
+Country: ${country}
+City: ${city}
+Employment Type: ${employmentType}
+Skill Level: ${skillLevel}
+Budget: ${budget}
+Additional Info: ${additionalInfo}
+Role Look: ${roleLook}
+Currency: ${currency}`
+        );
+
+        const mailtoLink = `mailto:bgrnaidu@gmail.com?subject=${subject}&body=${body}`;
+        window.location.href = mailtoLink;
+        setFormData({
+            contactName: '',
+            companyName: '',
+            email: '',
+            phone: '',
+            country: '',
+            city: '',
+            employmentType: '',
+            skillLevel: '',
+            budget: 0,
+            additionalInfo: '',
+            roleLook: '',
+            currency: null,
+            phoneCode: null
+        });
+        setSelectedCountry('');
+        setCities([]);
+    };
     const employmentTypes = [
         'Full-time Role',
         'Part-time Role',
@@ -159,7 +216,7 @@ const FormComponent: React.FC = () => {
 
     return (
         <div className="w-full flex justify-center">
-            <div className="h-auto w-[90%] md:w-full rounded-[10px] bg-[#EEF8FF] justify-center flex p-3 md:p-5">
+            <div className="h-auto w-[86%] md:w-full rounded-[10px] bg-[#EEF8FF] justify-center flex p-3 md:p-5">
                 <div className="rounded-[5px] bg-white px-5 shadow-sm font-rubik font-thin">
                     <form
                         onSubmit={handleSubmit}
@@ -179,6 +236,7 @@ const FormComponent: React.FC = () => {
                                             </span>
                                         </label>
                                         <input
+                                            required
                                             id="contactName"
                                             name="contactName"
                                             value={formData.contactName}
@@ -200,6 +258,7 @@ const FormComponent: React.FC = () => {
                                             </span>
                                         </label>
                                         <input
+                                            required
                                             id="companyName"
                                             name="companyName"
                                             value={formData.companyName}
@@ -223,6 +282,7 @@ const FormComponent: React.FC = () => {
                                             </span>
                                         </label>
                                         <input
+                                            required
                                             id="email"
                                             name="email"
                                             value={formData.email}
@@ -278,6 +338,7 @@ const FormComponent: React.FC = () => {
                                         <div className="w-full flex justify-between gap-2">
                                             <div className="flex w-[80px] flex-col  gap-3">
                                                 <input
+                                                    required
                                                     id="phoneCode"
                                                     name="phoneCode"
                                                     value={
@@ -288,6 +349,7 @@ const FormComponent: React.FC = () => {
                                                 />
                                             </div>
                                             <input
+                                                required
                                                 id="phone"
                                                 name="phone"
                                                 value={formData.phone}
@@ -371,6 +433,7 @@ const FormComponent: React.FC = () => {
                                             className="flex items-center mb-2"
                                         >
                                             <input
+                                                required
                                                 id={type}
                                                 name="employmentType"
                                                 type="radio"
@@ -406,6 +469,7 @@ const FormComponent: React.FC = () => {
                                             className="flex items-center mb-2"
                                         >
                                             <input
+                                                required
                                                 id={level}
                                                 name="skillLevel"
                                                 type="radio"
@@ -440,6 +504,7 @@ const FormComponent: React.FC = () => {
                                 <div className="w-full flex justify-between gap-2">
                                     <div className="flex w-[62px]   gap-3">
                                         <input
+                                            required
                                             id="currency"
                                             name="currency"
                                             value={formData.currency || ''}
@@ -449,6 +514,7 @@ const FormComponent: React.FC = () => {
                                     </div>
 
                                     <input
+                                        required
                                         id="budget"
                                         name="budget"
                                         value={formData.budget}
@@ -470,6 +536,7 @@ const FormComponent: React.FC = () => {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <input
+                                    required
                                     id="additionalInfo"
                                     name="additionalInfo"
                                     value={formData.additionalInfo}
@@ -478,19 +545,15 @@ const FormComponent: React.FC = () => {
                                     placeholder="Type your message"
                                 />
                             </div>
-
-                            <div className="flex w-full flex-col items-start gap-3">
-                                <label
-                                    htmlFor="currency"
-                                    className="block text-sm font-thin"
-                                >
-                                    Currency
-                                </label>
-                            </div>
                         </div>
                         <div className="mt-4">
-                            <Button>Submit</Button>
+                            <Button type="submit">Submit</Button>
                         </div>
+
+                        <Modal
+                            isVisible={isModalVisible}
+                            toggleModal={toggleModal}
+                        />
                     </form>
                 </div>
             </div>
